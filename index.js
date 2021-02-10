@@ -38,8 +38,12 @@ initializeApp(app, kubeconfig)
 
 const handleRequest = (httpsAgent) => async (req, res) => {
   delete req.headers.host; // remove host in order not to confuse APIServer
+
+  const targetApiServer = req.headers['x-api-url'];
+  delete req.headers['x-api-url'];
+
   const options = {
-    hostname: k8sUrl.hostname,
+    hostname: targetApiServer || k8sUrl.hostname,
     path: req.originalUrl,
     headers: { ...req.headers, "Accept-Encoding": "" }, // a bit of explaination: k8s API handles accepting gzip but randomly decides to actually use it or not.
     body: req.body,
