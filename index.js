@@ -9,7 +9,7 @@ import { requestLogger } from "./utils/other";
 
 const app = express();
 app.use(express.raw({ type: "*/*" }));
-app.use(cors({ origin: "*" })); //TODO
+app.use(cors({ origin: "*", allowedHeaders: '*'})); //TODO
 app.use(compression()); //Compress all routes
 
 const server = http.createServer(app);
@@ -55,6 +55,7 @@ const handleRequest = (httpsAgent) => async (req, res) => {
     .request(options, function (k8sResponse) {
       res.writeHead(k8sResponse.statusCode, {
         "Content-Type": k8sResponse.headers["Content-Type"] || "text/json",
+        "Access-Control-Allow-Headers": "*"
       });
 
       k8sResponse.pipe(res);
